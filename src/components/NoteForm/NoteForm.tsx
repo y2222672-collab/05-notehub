@@ -1,11 +1,12 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { type NoteTag } from "../../types/note";
 import css from "./NoteForm.module.css";
 
 interface FormValues {
   title: string;
   content: string;
-  tag: string;
+  tag: NoteTag;
 }
 
 const NoteSchema = Yup.object().shape({
@@ -14,7 +15,8 @@ const NoteSchema = Yup.object().shape({
     .max(50, "Too Long!")
     .required("Title is required"),
   content: Yup.string()
-    .min(10, "Content must be at least 10 characters")
+    .min(10, "Minimum 10 characters")
+    .max(500, "Maximum 500 characters")
     .required("Content is required"),
   tag: Yup.string().required("Please select a tag"),
 });
@@ -29,8 +31,9 @@ const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
     <Formik<FormValues>
       initialValues={{ title: "", content: "", tag: "Work" }}
       validationSchema={NoteSchema}
-      onSubmit={(values) => {
+      onSubmit={(values, { resetForm }) => {
         onSubmit(values);
+        resetForm();
       }}
     >
       {({ isSubmitting, errors, touched }) => (
@@ -39,10 +42,10 @@ const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
             <label htmlFor="title">Title</label>
             <Field
               name="title"
+              id="title"
               className={`${css.input} ${
                 errors.title && touched.title ? css.inputError : ""
               }`}
-              placeholder="Note title"
             />
             <ErrorMessage name="title" component="div" className={css.error} />
           </div>
@@ -52,11 +55,11 @@ const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
             <Field
               as="textarea"
               name="content"
+              id="content"
               rows={4}
               className={`${css.textarea} ${
                 errors.content && touched.content ? css.inputError : ""
               }`}
-              placeholder="Note description"
             />
             <ErrorMessage
               name="content"
@@ -67,13 +70,13 @@ const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
 
           <div className={css.formGroup}>
             <label htmlFor="tag">Tag</label>
-            <Field as="select" name="tag" className={css.select}>
+            <Field as="select" name="tag" id="tag" className={css.select}>
               <option value="Work">Work</option>
               <option value="Personal">Personal</option>
               <option value="Todo">Todo</option>
               <option value="Shopping">Shopping</option>
+              <option value="Meeting">Meeting</option>
             </Field>
-            <ErrorMessage name="tag" component="div" className={css.error} />
           </div>
 
           <div className={css.actions}>
@@ -89,7 +92,7 @@ const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
               className={css.submitButton}
               disabled={isSubmitting}
             >
-              Create Note
+              {isSubmitting ? "Creating..." : "Create Note"}
             </button>
           </div>
         </Form>

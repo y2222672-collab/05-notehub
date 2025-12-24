@@ -1,33 +1,22 @@
 import css from "./SearchBox.module.css";
 
 interface SearchBoxProps {
-    value: string;
-    onChange: (value: string) => void;
+  value: string;
+  onChange: (value: string) => void;
 }
 
-const SearchBox = ({value, onChange} :SearchBoxProps) => {
-
-    return (
+const SearchBox = ({ value, onChange }: SearchBoxProps) => {
+  return (
     <div className={css.wrapper}>
-      <label className={css.label}>
-        Search by title
-        <input
-          type="text"
-          className={css.input}
-          value={value} 
-          placeholder="Enter search term..."
-          onChange={(e) => onChange(e.target.value)} 
-        />
-      </label>
+      <input
+        type="text"
+        className={css.input}
+        value={value}
+        placeholder="Search notes"
+        onChange={(e) => onChange(e.target.value)}
+      />
     </div>
-);
-}
+  );
+};
 
 export default SearchBox;
-
-
-
-
-
-
-

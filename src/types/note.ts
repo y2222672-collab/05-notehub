@@ -11,5 +11,5 @@ export interface Note {
 export interface NoteFormData {
   title: string;
   content: string;
-  tag: string;
+  tag: NoteTag;
 }

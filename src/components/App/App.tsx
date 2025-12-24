@@ -13,6 +13,8 @@ import NoteList from "../NoteList/NoteList";
 import Pagination from "../Pagination/Pagination";
 import Modal from "../Modal/Modal";
 import NoteForm from "../NoteForm/NoteForm";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import Loader from "../Loader/Loader";
 
 const App = () => {
   const queryClient = useQueryClient();
@@ -21,7 +23,7 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [debouncedSearch] = useDebounce(search, 500);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isFetching, isError } = useQuery({
     queryKey: ["notes", page, debouncedSearch],
     queryFn: () => fetchNotes(page, 12, debouncedSearch),
     placeholderData: keepPreviousData,
@@ -49,26 +51,39 @@ const App = () => {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox value={search} onChange={handleSearch} />
+        <div className={css.leftSection}>
+          <SearchBox value={search} onChange={handleSearch} />
+        </div>
 
-        {data && data.totalPages > 1 && (
-          <Pagination
-            totalPages={data.totalPages}
-            currentPage={page}
-            onChange={(newPage) => setPage(newPage)}
-          />
-        )}
+        <div className={css.centerSection}>
+          {data && data.totalPages > 1 && (
+            <Pagination
+              totalPages={data.totalPages}
+              currentPage={page}
+              onChange={(newPage) => setPage(newPage)}
+            />
+          )}
+        </div>
 
-        <button className={css.button} onClick={() => setIsModalOpen(true)}>
-          Add Note
-        </button>
+        <div className={css.rightSection}>
+          <button className={css.button} onClick={() => setIsModalOpen(true)}>
+            Create note +
+          </button>
+        </div>
       </header>
 
-      <main>
-        {isLoading && <p>Loading...</p>}
-        {isError && <p>Error loading data</p>}
+      <main className={css.mainContent}>
+        {isFetching && (
+          <div className={css.loaderContainer}>
+            <Loader />
+          </div>
+        )}
 
-        {data && (
+        {!isFetching && isError && (
+          <ErrorMessage message="Failed to load notes. Check your internet connection." />
+        )}
+
+        {!isFetching && !isError && data && (
           <NoteList
             notes={data.notes}
             onDelete={(id) => deleteMutation.mutate(id)}

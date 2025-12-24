@@ -1,35 +1,39 @@
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 4px;
-  margin: 16px 0;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0;
   list-style: none;
   padding: 0;
 }
 
-.pageItem {
+.pageItem,
+.prev,
+.next,
+.break {
   border: 1px solid #dee2e6;
   border-radius: 4px;
-  cursor: pointer;
-  min-width: 36px;
-  height: 36px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  display: flex;
 }
 
-.pageItem a,
-.prev a,
-.next a {
+.pageLink,
+.link {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 12px;
   text-decoration: none;
   color: #0d6efd;
   font-size: 14px;
+  cursor: pointer;
 }
 
-.pageItem:hover {
+.pageItem:hover:not(.active) {
   background-color: #e9ecef;
 }
 
@@ -38,46 +42,16 @@
   border-color: #0d6efd;
 }
 
-.active a {
+.active .pageLink {
   color: #fff !important;
-  font-weight: 500;
-}
-
-.prev,
-.next {
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 0 10px;
-}
-
-.prev:hover,
-.next:hover {
-  background-color: #e9ecef;
+  font-weight: 600;
 }
 
 .disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  pointer-events: none;
 }
 
-.disabled a {
+.disabled .link {
   color: #6c757d;
-}
-.list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  list-style: none;
-  padding: 0;
-}
-
-.noteCard {
-  border: 1px solid #ddd;
-  padding: 16px;
-  border-radius: 8px;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
 }
