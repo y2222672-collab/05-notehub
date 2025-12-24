@@ -7,3 +7,9 @@ export interface Note {
   tag: NoteTag;
   createdAt: string;
 }
+
+export interface NoteFormData {
+  title: string;
+  content: string;
+  tag: string;
+}

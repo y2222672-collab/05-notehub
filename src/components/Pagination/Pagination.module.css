@@ -5,10 +5,9 @@
   margin: 16px 0;
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
-.pagination li {
+.pageItem {
   border: 1px solid #dee2e6;
   border-radius: 4px;
   cursor: pointer;
@@ -17,7 +16,9 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.pagination li a {
+.pageItem a,
+.prev a,
+.next a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,12 +29,8 @@
   font-size: 14px;
 }
 
-.pagination li:hover {
+.pageItem:hover {
   background-color: #e9ecef;
-}
-
-.pagination li.active:hover {
-  background-color: #0d6efd;
 }
 
 .active {
@@ -44,4 +41,43 @@
 .active a {
   color: #fff !important;
   font-weight: 500;
+}
+
+.prev,
+.next {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.prev:hover,
+.next:hover {
+  background-color: #e9ecef;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disabled a {
+  color: #6c757d;
+}
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.noteCard {
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }

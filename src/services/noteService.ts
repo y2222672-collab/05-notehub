@@ -22,11 +22,16 @@ const response = await noteApi.get<FetchNotesResponse>("/notes", {
 return response.data; 
 }
 
-export const createNote = async (noteData: Omit<Note, "id" | "createdAt">) : Promise<Note> => {
-const response = await noteApi.post<Note>("/notes", noteData);
+export const createNote = async (noteData: { title: string; content: string; tag: string }) => {
+    const response = await noteApi.post("/notes", noteData);
     return response.data;
+};
 
-}
+// export const createNote = async (noteData: Omit<Note, "id" | "createdAt">) : Promise<Note> => {
+// const response = await noteApi.post<Note>("/notes", noteData);
+//     return response.data;
+
+// }
 
 export const deleteNote = async (id: string) : Promise<Note> => {
     const response = await noteApi.delete<Note>(`/notes/${id}`);
