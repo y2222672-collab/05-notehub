@@ -1,5 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createNote } from "../../services/noteService";
 import { type NoteTag } from "../../types/note";
 import css from "./NoteForm.module.css";
 
@@ -14,29 +16,33 @@ const NoteSchema = Yup.object().shape({
     .min(3, "Too Short!")
     .max(50, "Too Long!")
     .required("Title is required"),
-  content: Yup.string()
-    .min(10, "Minimum 10 characters")
-    .max(500, "Maximum 500 characters")
-    .required("Content is required"),
+  content: Yup.string().max(500, "Maximum 500 characters"),
   tag: Yup.string().required("Please select a tag"),
 });
 
 interface NoteFormProps {
-  onSubmit: (values: FormValues) => void;
   onCancel: () => void;
 }
 
-const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
+const NoteForm = ({ onCancel }: NoteFormProps) => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      onCancel();
+    },
+  });
+
   return (
     <Formik<FormValues>
       initialValues={{ title: "", content: "", tag: "Work" }}
       validationSchema={NoteSchema}
-      onSubmit={(values, { resetForm }) => {
-        onSubmit(values);
-        resetForm();
+      onSubmit={(values) => {
+        mutation.mutate(values);
       }}
     >
-      {({ isSubmitting, errors, touched }) => (
+      {({ errors, touched }) => (
         <Form className={css.form}>
           <div className={css.formGroup}>
             <label htmlFor="title">Title</label>
@@ -57,6 +63,7 @@ const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
               name="content"
               id="content"
               rows={4}
+              placeholder="Optional content"
               className={`${css.textarea} ${
                 errors.content && touched.content ? css.inputError : ""
               }`}
@@ -90,9 +97,9 @@ const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
             <button
               type="submit"
               className={css.submitButton}
-              disabled={isSubmitting}
+              disabled={mutation.isPending}
             >
-              {isSubmitting ? "Creating..." : "Create Note"}
+              {mutation.isPending ? "Creating..." : "Create Note"}
             </button>
           </div>
         </Form>

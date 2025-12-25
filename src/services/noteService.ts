@@ -11,9 +11,6 @@ noteApi.defaults.headers.common["Authorization"] = `Bearer ${
 
 export interface FetchNotesResponse {
   notes: Note[];
-  total: number;
-  page: number;
-  perPage: number;
   totalPages: number;
 }
 
@@ -30,14 +27,14 @@ export const fetchNotes = async (
 
 export const createNote = async (noteData: {
   title: string;
-  content: string;
+  content?: string;
   tag: string;
-}) => {
-  const response = await noteApi.post("/notes", noteData);
+}): Promise<Note> => {
+  const response = await noteApi.post<Note>("/notes", noteData);
   return response.data;
 };
 
-export const deleteNote = async (id: string): Promise<Note> => {
-  const response = await noteApi.delete<Note>(`/notes/${id}`);
+export const deleteNote = async (id: string): Promise<{ id: string }> => {
+  const response = await noteApi.delete<{ id: string }>(`/notes/${id}`);
   return response.data;
 };
