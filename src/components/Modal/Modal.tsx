@@ -11,9 +11,19 @@ const modalRoot = document.querySelector("#modal-root") as HTMLElement;
 
 const Modal = ({ children, onClose }: ModalProps) => {
   useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
+
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === "Escape") onClose();
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
@@ -23,13 +33,8 @@ const Modal = ({ children, onClose }: ModalProps) => {
   };
 
   return createPortal(
-    <div
-      className={css.backdrop}
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-    >
-      <div className={css.modal}>{children}</div>
+    <div className={css.backdrop} onClick={handleBackdropClick}>
+      <div className={css.content}>{children}</div>
     </div>,
     modalRoot
   );
